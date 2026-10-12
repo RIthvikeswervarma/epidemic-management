@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}View Diseases - EpiShield{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h2 class="text-center text-success mb-4">View Diseases</h2>
+
+        <!-- Search Bar -->
+        <div class="row mb-4">
+            <div class="col-md-6 offset-md-3">
+                <input type="text" id="searchInput" class="form-control" placeholder="Search diseases by name..." onkeyup="searchDiseases()">
+            </div>
+        </div>
+
+        <!-- Diseases Table -->
+        <div class="card shadow-sm p-4">
+            <h4 class="card-title text-center">Disease List</h4>
+            {% if diseases %}
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover" id="diseasesTable">
+                        <thead class="table-success">
+                            <tr>
+                                <th>Disease ID</th>
+                                <th>Disease Name</th>
+                                <th>Symptoms</th>
+                                <th>Mortality Rate (%)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for disease in diseases %}
+                                <tr>
+                                    <td>{{ disease[0] }}</td>
+                                    <td>{{ disease[1] }}</td>
+                                    <td>{{ disease[2] }}</td>
+                                    <td>{{ disease[3] }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-center text-muted">No diseases found.</p>
+            {% endif %}
+            <div class="text-center mt-3">
+                <a href="{{ url_for('report_disease') }}" class="btn btn-success">Report New Disease</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function searchDiseases() {
+            let input = document.getElementById('searchInput').value.toLowerCase();
+            let table = document.getElementById('diseasesTable');
+            if (!table) {
+                return;
+            }
+            let rows = table.getElementsByTagName('tr');
+
+            for (let i = 1; i < rows.length; i++) {
+                let name = rows[i].getElementsByTagName('td')[1].textContent.toLowerCase();
+                let symptoms = rows[i].getElementsByTagName('td')[2].textContent.toLowerCase();
+                if (name.includes(input) || symptoms.includes(input)) {
+                    rows[i].style.display = '';
+                } else {
+                    rows[i].style.display = 'none';
+                }
+            }
+        }
+    </script>
+{% endblock %}
